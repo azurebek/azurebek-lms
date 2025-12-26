@@ -144,3 +144,7 @@ CKEDITOR_CONFIGS = {
         'width': '100%',
     },
 }
+
+CSRF_TRUSTED_ORIGINS = [
+    'https://lobster-app-hwpyp.ondigitalocean.app'
+]
