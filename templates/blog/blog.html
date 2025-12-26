@@ -1,0 +1,148 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Blog - Azurebek{% endblock %}
+
+{% block content %}
+
+<style>
+    /* Blog rasmlari */
+    .post-img img {
+        width: 100%;
+        height: 280px;
+        object-fit: cover;
+        border-radius: 8px;
+    }
+
+    /* Sidebar rasmlari */
+    .recent-posts-widget .post-item img {
+        width: 80px;
+        height: 60px;
+        object-fit: cover;
+        border-radius: 4px;
+    }
+
+    /* Navbar masofasi */
+    .blog-container {
+        padding-top: 120px;
+        padding-bottom: 60px;
+    }
+
+    /* Maqola sarlavhasi */
+    .title a {
+        color: #012970;
+        text-decoration: none;
+        transition: 0.3s;
+    }
+    .title a:hover {
+        color: #4154f1;
+    }
+</style>
+
+<div class="container blog-container">
+  <div class="row">
+
+    <div class="col-lg-8">
+
+        <div class="blog-posts">
+            <div class="row gy-4">
+
+                {% for post in posts %}
+                <div class="col-12">
+                  <article style="background: #fff; padding: 30px; box-shadow: 0 4px 16px rgba(0,0,0,0.05); border-radius: 10px; margin-bottom: 20px;">
+
+                    <div class="post-img mb-3">
+                      {% if post.image %}
+                          <img src="{{ post.image.url }}" alt="{{ post.title }}" class="img-fluid">
+                      {% else %}
+                          <img src="{% static 'assets/img/blog/blog-1.jpg' %}" alt="Default Image" class="img-fluid">
+                      {% endif %}
+                    </div>
+
+                    <h2 class="title h4 fw-bold">
+                      <a href="{% url 'blog_detail' post.slug %}">{{ post.title }}</a>
+                    </h2>
+
+                    <div class="meta-top text-muted small mb-3">
+                      <ul class="list-unstyled d-flex gap-3">
+                        <li class="d-flex align-items-center"><i class="bi bi-person me-1"></i> {{ post.author.first_name|default:post.author.username }}</li>
+                        <li class="d-flex align-items-center"><i class="bi bi-clock me-1"></i> <time datetime="{{ post.created_at|date:'Y-m-d' }}">{{ post.created_at|date:"M d, Y" }}</time></li>
+                        {% if post.category %}
+                        <li class="d-flex align-items-center">
+                            <i class="bi bi-folder2 me-1"></i>
+                            <a href="{% url 'blog' %}?category={{ post.category.slug }}" class="text-muted">{{ post.category.name }}</a>
+                        </li>
+                        {% endif %}
+                      </ul>
+                    </div>
+
+                    <div class="content">
+                      <p class="mb-3">
+                        {{ post.content|striptags|truncatewords:30 }}
+                      </p>
+                      <div class="read-more">
+                        <a href="{% url 'blog_detail' post.slug %}" class="btn btn-primary btn-sm">Read More</a>
+                      </div>
+                    </div>
+
+                  </article>
+                </div>
+                {% empty %}
+                  <div class="col-12 text-center">
+                      <h3>Hozircha maqolalar topilmadi.</h3>
+                  </div>
+                {% endfor %}
+
+            </div>
+        </div>
+
+    </div>
+    <div class="col-lg-4 sidebar">
+
+      <div class="widgets-container p-4 bg-white rounded shadow-sm">
+
+        <div class="search-widget widget-item mb-4">
+          <h3 class="widget-title h5 fw-bold mb-3">Search</h3>
+          <form action="{% url 'blog' %}" method="GET" class="d-flex gap-2">
+            <input type="text" name="q" class="form-control" placeholder="Search..." value="{{ query|default:'' }}">
+            <button type="submit" class="btn btn-primary"><i class="bi bi-search"></i></button>
+          </form>
+        </div>
+
+        <div class="categories-widget widget-item mb-4">
+          <h3 class="widget-title h5 fw-bold mb-3">Categories</h3>
+          <ul class="list-unstyled mt-3">
+            <li class="mb-2"><a href="{% url 'blog' %}" class="text-decoration-none text-secondary">All <span class="text-muted small">(View All)</span></a></li>
+            {% for cat in categories %}
+            <li class="mb-2">
+                <a href="{% url 'blog' %}?category={{ cat.slug }}" class="text-decoration-none text-secondary">
+                    {{ cat.name }} <span class="text-muted small">({{ cat.post_count }})</span>
+                </a>
+            </li>
+            {% endfor %}
+          </ul>
+        </div>
+
+        <div class="recent-posts-widget widget-item">
+          <h3 class="widget-title h5 fw-bold mb-3">Recent Posts</h3>
+          {% for r_post in recent_posts %}
+          <div class="post-item d-flex gap-3 mb-3 align-items-center">
+              {% if r_post.image %}
+                  <img src="{{ r_post.image.url }}" alt="{{ r_post.title }}" class="flex-shrink-0">
+              {% else %}
+                  <img src="{% static 'assets/img/blog/blog-recent-1.jpg' %}" alt="" class="flex-shrink-0">
+              {% endif %}
+              <div>
+                  <h4 class="h6 mb-1"><a href="{% url 'blog_detail' r_post.slug %}" class="text-dark text-decoration-none">{{ r_post.title|truncatechars:40 }}</a></h4>
+                  <time class="text-muted small" datetime="{{ r_post.created_at|date:'Y-m-d' }}">{{ r_post.created_at|date:"M d, Y" }}</time>
+              </div>
+          </div>
+          {% endfor %}
+        </div>
+
+      </div>
+    </div>
+    </div>
+</div>
+
+{% endblock %}

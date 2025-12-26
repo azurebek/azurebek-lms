@@ -1,0 +1,188 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Kurslar - Azurebek{% endblock %}
+
+{% block content %}
+
+<style>
+    /* Sahifa sarlavhasi */
+    .page-header {
+        /* YANGI QO'SHILDI: Navbar ostidan chiqish uchun */
+        margin-top: 85px;
+
+        background: #f6f9ff;
+        padding: 60px 0;
+        text-align: center;
+        margin-bottom: 40px;
+    }
+    .page-header h2 {
+        font-weight: 700;
+        color: #012970;
+    }
+
+    /* KURS KARTOCHKASI DIZAYNI */
+    .course-card {
+        border: none;
+        border-radius: 10px;
+        overflow: hidden;
+        transition: 0.3s;
+        background: #fff;
+        box-shadow: 0 5px 20px rgba(0,0,0,0.05);
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .course-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    }
+
+    .course-img {
+        height: 200px;
+        overflow: hidden;
+        position: relative;
+    }
+
+    .course-img img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: 0.3s;
+    }
+
+    .course-card:hover .course-img img {
+        transform: scale(1.05);
+    }
+
+    /* Chegirma va Narx */
+    .course-price {
+        position: absolute;
+        bottom: 15px;
+        right: 15px;
+        background: #fff;
+        padding: 6px 12px;
+        border-radius: 4px;
+        font-weight: 700;
+        color: #4154f1;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+    
+    .discount-badge {
+        position: absolute;
+        top: 15px;
+        left: 15px;
+        background: #dc3545;
+        color: #fff;
+        padding: 4px 10px;
+        border-radius: 4px;
+        font-size: 12px;
+        font-weight: 600;
+    }
+
+    .course-body {
+        padding: 25px;
+        flex-grow: 1;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .course-title {
+        font-size: 18px;
+        font-weight: 700;
+        margin-bottom: 10px;
+        color: #012970;
+    }
+    
+    .course-desc {
+        font-size: 14px;
+        color: #6c757d;
+        margin-bottom: 20px;
+        flex-grow: 1;
+    }
+    
+    .old-price {
+        text-decoration: line-through;
+        color: #999;
+        font-size: 14px;
+        margin-right: 5px;
+    }
+
+    /* Tugma */
+    .btn-course {
+        width: 100%;
+        background: #f6f9ff;
+        color: #4154f1;
+        font-weight: 600;
+        border: none;
+        padding: 10px;
+        border-radius: 5px;
+        transition: 0.3s;
+    }
+    .btn-course:hover {
+        background: #4154f1;
+        color: #fff;
+    }
+
+</style>
+
+<main class="main">
+
+    <div class="page-header">
+        <div class="container">
+            <h2>Bizning Kurslar</h2>
+            <p>O'zingizga mos guruhni tanlang va o'qishni bugunoq boshlang!</p>
+        </div>
+    </div>
+
+    <section class="container mb-5">
+        <div class="row gy-4">
+
+            {% for course in courses %}
+            <div class="col-lg-4 col-md-6">
+                <div class="course-card">
+                    
+                    <div class="course-img">
+                        {% if course.image %}
+                            <img src="{{ course.image.url }}" alt="{{ course.title }}">
+                        {% else %}
+                            <img src="https://via.placeholder.com/400x250" alt="Default">
+                        {% endif %}
+
+                        {% if course.get_discount_percent > 0 %}
+                            <span class="discount-badge">-{{ course.get_discount_percent }}%</span>
+                        {% endif %}
+
+                        <div class="course-price">
+                            {% if course.old_price %}
+                                <span class="old-price">{{ course.old_price }} so'm</span>
+                            {% endif %}
+                            {{ course.price }} so'm
+                        </div>
+                    </div>
+
+                    <div class="course-body">
+                        <h3 class="course-title">{{ course.title }}</h3>
+                        <div class="course-desc">
+                            {{ course.description|safe|striptags|truncatewords:20 }}
+                        </div>
+                        
+                        <a href="{% url 'course_detail' course.slug %}" class="btn btn-course">Batafsil ma'lumot <i class="bi bi-arrow-right"></i></a>
+                    </div>
+
+                </div>
+            </div>
+            {% empty %}
+            <div class="col-12 text-center py-5">
+                <h3>Hozircha kurslar mavjud emas.</h3>
+                <p>Tez orada yangi guruhlar e'lon qilinadi.</p>
+            </div>
+            {% endfor %}
+
+        </div>
+    </section>
+
+</main>
+
+{% endblock %}

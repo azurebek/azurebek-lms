@@ -1,0 +1,372 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}My Learning - Azurebek{% endblock %}
+
+{% block content %}
+
+<style>
+    /* MY LEARNINGS UCHUN MAXSUS STIL */
+    .learning-section {
+        padding-top: 120px;
+        padding-bottom: 60px;
+        background-color: #f9fafe; /* Juda och fon */
+        min-height: 100vh;
+    }
+
+    /* 1. Chap tomon (Sidebar) Kartalari */
+    .sidebar-card {
+        background: #fff;
+        border-radius: 12px;
+        padding: 20px;
+        border: 1px solid #e5e7eb;
+        margin-bottom: 20px;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.02);
+    }
+
+    .sidebar-title {
+        font-size: 16px;
+        font-weight: 700;
+        color: #1f2937;
+        margin-bottom: 15px;
+    }
+
+    .goal-item {
+        display: flex;
+        align-items: center;
+        margin-bottom: 12px;
+        color: #4b5563;
+        font-size: 14px;
+    }
+
+    .goal-item i {
+        color: #d1d5db; /* Kulrang yulduzcha */
+        margin-right: 10px;
+        font-size: 16px;
+    }
+    
+    .goal-item.completed i {
+        color: #fbbf24; /* Sariq yulduzcha */
+    }
+
+    /* Kalendar kunlari (Visual) */
+    .calendar-week {
+        display: flex;
+        justify-content: space-between;
+    }
+    .calendar-day {
+        text-align: center;
+        font-size: 12px;
+        width: 30px;
+        height: 30px;
+        line-height: 30px;
+        border-radius: 50%;
+        color: #6b7280;
+    }
+    .calendar-day.active {
+        background-color: #4154f1;
+        color: white;
+        font-weight: bold;
+    }
+    .calendar-day.has-event {
+        border: 1px solid #4154f1;
+        color: #4154f1;
+        font-weight: 600;
+    }
+
+    /* 2. O'ng tomon (Kurslar ro'yxati) */
+    .welcome-header h2 {
+        font-weight: 700;
+        color: #111827;
+        margin-bottom: 5px;
+    }
+    .welcome-header p {
+        color: #6b7280;
+        font-size: 15px;
+    }
+
+    /* Tab tugmalari (In Progress / Completed) */
+    .learning-tabs {
+        margin-bottom: 20px;
+        border-bottom: 1px solid #e5e7eb;
+    }
+    .tab-btn {
+        background: none;
+        border: none;
+        padding: 10px 20px;
+        font-weight: 600;
+        color: #6b7280;
+        border-bottom: 2px solid transparent;
+        margin-right: 10px;
+        transition: 0.3s;
+    }
+    .tab-btn.active {
+        color: #4154f1;
+        border-bottom: 2px solid #4154f1;
+    }
+    .tab-btn:hover {
+        color: #111827;
+    }
+
+    /* KURS KARTASI (Eng muhim qism) */
+    .course-card {
+        background: #fff;
+        border-radius: 12px;
+        padding: 25px;
+        border: 1px solid #e5e7eb;
+        margin-bottom: 20px;
+        display: flex;
+        flex-direction: row; /* Yonma-yon */
+        align-items: center;
+        transition: 0.3s;
+    }
+
+    .course-card:hover {
+        box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+        transform: translateY(-2px);
+        border-color: #4154f1;
+    }
+
+    .course-logo {
+        width: 60px;
+        height: 60px;
+        border-radius: 8px;
+        background-color: #f3f4f6;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-right: 20px;
+        font-size: 24px;
+        color: #4154f1;
+        flex-shrink: 0;
+    }
+
+    .course-info {
+        flex-grow: 1;
+        margin-right: 20px;
+    }
+
+    .provider-name {
+        font-size: 12px;
+        text-transform: uppercase;
+        color: #6b7280;
+        font-weight: 700;
+        letter-spacing: 0.5px;
+        margin-bottom: 5px;
+    }
+
+    .course-title {
+        font-size: 18px;
+        font-weight: 700;
+        color: #111827;
+        margin-bottom: 8px;
+        text-decoration: none;
+        display: block;
+    }
+
+    .course-meta {
+        font-size: 13px;
+        color: #6b7280;
+        display: flex;
+        align-items: center;
+        gap: 15px;
+    }
+
+    /* Progress bar */
+    .progress-wrapper {
+        margin-top: 10px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+    .progress {
+        height: 6px;
+        width: 150px;
+        border-radius: 10px;
+        background-color: #e5e7eb;
+    }
+    .progress-bar {
+        background-color: #4154f1;
+        border-radius: 10px;
+    }
+    .progress-text {
+        font-size: 13px;
+        font-weight: 600;
+        color: #4154f1;
+    }
+
+    /* Resume Button */
+    .btn-resume {
+        background-color: #4154f1;
+        color: white;
+        padding: 8px 20px;
+        border-radius: 6px;
+        font-weight: 600;
+        font-size: 14px;
+        text-decoration: none;
+        white-space: nowrap;
+        transition: 0.3s;
+    }
+    .btn-resume:hover {
+        background-color: #2a3bce;
+        color: white;
+    }
+
+    /* Mobil versiya uchun moslashuv */
+    @media (max-width: 768px) {
+        .course-card {
+            flex-direction: column;
+            align-items: flex-start;
+        }
+        .course-logo {
+            margin-bottom: 15px;
+        }
+        .course-info {
+            margin-right: 0;
+            margin-bottom: 15px;
+            width: 100%;
+        }
+        .progress {
+            width: 100%;
+        }
+        .btn-resume {
+            width: 100%;
+            text-align: center;
+        }
+    }
+</style>
+
+<section class="learning-section">
+    <div class="container" data-aos="fade-up">
+
+        <div class="row mb-4">
+            <div class="col-12 welcome-header">
+                <h2>Good evening, {{ user.first_name|default:user.username }}! 👋</h2>
+                <p>Ready to continue your learning journey?</p>
+            </div>
+        </div>
+
+        <div class="row">
+            
+            <div class="col-lg-3">
+                
+                <div class="sidebar-card">
+                    <h4 class="sidebar-title">Today's goals</h4>
+                    <div class="goal-item">
+                        <i class="bi bi-circle"></i> <span>Complete 1 lesson</span>
+                    </div>
+                    <div class="goal-item">
+                        <i class="bi bi-circle"></i> <span>Watch 2 videos</span>
+                    </div>
+                    <div class="goal-item completed">
+                        <i class="bi bi-check-circle-fill text-success"></i> <span style="text-decoration: line-through; color: #9ca3af;">Login to platform</span>
+                    </div>
+                </div>
+
+                <div class="sidebar-card">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h4 class="sidebar-title mb-0">Learning plan</h4>
+                        <a href="#" style="font-size: 12px;">Edit</a>
+                    </div>
+                    <div class="text-center mb-2" style="font-size: 14px; font-weight: 600;">December 2025</div>
+                    <div class="calendar-week">
+                        <div class="calendar-day">M</div>
+                        <div class="calendar-day">T</div>
+                        <div class="calendar-day">W</div>
+                        <div class="calendar-day active">T</div> <div class="calendar-day has-event">F</div>
+                        <div class="calendar-day">S</div>
+                        <div class="calendar-day">S</div>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="col-lg-9">
+                
+                <div class="learning-tabs">
+                    <button class="tab-btn active">In Progress</button>
+                    <button class="tab-btn">Completed</button>
+                </div>
+
+                <div class="course-card">
+                    <div class="course-logo">
+                        <i class="bi bi-database-fill-gear"></i>
+                    </div>
+                    
+                    <div class="course-info">
+                        <div class="provider-name">IBM Skills Network</div>
+                        <a href="#" class="course-title">Tools for Data Science</a>
+                        
+                        <div class="course-meta">
+                            <span><i class="bi bi-camera-video me-1"></i> Video (7 min)</span>
+                            <span><i class="bi bi-clock me-1"></i> Due Feb 2, 2026</span>
+                        </div>
+
+                        <div class="progress-wrapper">
+                            <div class="progress">
+                                <div class="progress-bar" role="progressbar" style="width: 6%" aria-valuenow="6" aria-valuemin="0" aria-valuemax="100"></div>
+                            </div>
+                            <span class="progress-text">6% complete</span>
+                        </div>
+                    </div>
+
+                    <a href="#" class="btn-resume">Resume</a>
+                </div>
+
+                <div class="course-card">
+                    <div class="course-logo" style="color: #dc3545; background-color: #fff5f5;">
+                        <i class="bi bi-translate"></i>
+                    </div>
+                    
+                    <div class="course-info">
+                        <div class="provider-name">Azurebek Academy</div>
+                        <a href="#" class="course-title">Turkish Grammar A1: Basics</a>
+                        
+                        <div class="course-meta">
+                            <span><i class="bi bi-book me-1"></i> Reading</span>
+                            <span><i class="bi bi-clock me-1"></i> Due Tomorrow</span>
+                        </div>
+
+                        <div class="progress-wrapper">
+                            <div class="progress">
+                                <div class="progress-bar bg-success" role="progressbar" style="width: 45%" aria-valuenow="45" aria-valuemin="0" aria-valuemax="100"></div>
+                            </div>
+                            <span class="progress-text text-success">45% complete</span>
+                        </div>
+                    </div>
+
+                    <a href="#" class="btn-resume">Resume</a>
+                </div>
+
+                <div class="course-card">
+                    <div class="course-logo" style="color: #ffca2c; background-color: #fffbf0;">
+                        <i class="bi bi-code-square"></i>
+                    </div>
+                    
+                    <div class="course-info">
+                        <div class="provider-name">Frontend Masters</div>
+                        <a href="#" class="course-title">Advanced Bootstrap 5 Layouts</a>
+                        
+                        <div class="course-meta">
+                            <span><i class="bi bi-play-circle me-1"></i> Course</span>
+                            <span>Start anytime</span>
+                        </div>
+
+                        <div class="progress-wrapper">
+                            <div class="progress">
+                                <div class="progress-bar" role="progressbar" style="width: 0%" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+                            </div>
+                            <span class="progress-text" style="color: #6b7280;">Not started</span>
+                        </div>
+                    </div>
+
+                    <a href="#" class="btn-resume" style="background-color: #fff; color: #4154f1; border: 1px solid #4154f1;">Start</a>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+</section>
+
+{% endblock %}

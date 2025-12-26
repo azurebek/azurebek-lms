@@ -1,0 +1,89 @@
+{% extends "base.html" %}
+{% block title %}To'lov qilish - {{ course.title }}{% endblock %}
+
+{% block content %}
+
+<style>
+    /* YANGI QO'SHILDI: Navbar ostidan chiqish uchun */
+    .payment-container {
+        padding-top: 120px; /* Header balandligiga qarab joy tashlaymiz */
+        padding-bottom: 60px;
+    }
+
+    .payment-card {
+        max-width: 600px;
+        margin: 0 auto;
+        background: #fff;
+        padding: 40px;
+        border-radius: 15px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    }
+    .bank-card {
+        background: linear-gradient(45deg, #012970, #4154f1);
+        color: #fff;
+        padding: 20px;
+        border-radius: 10px;
+        margin-bottom: 20px;
+        text-align: center;
+    }
+    .card-number {
+        font-size: 24px;
+        font-family: monospace;
+        letter-spacing: 2px;
+        margin: 10px 0;
+    }
+</style>
+
+<div class="container payment-container">
+    
+    <div class="payment-card">
+        <h2 class="text-center fw-bold mb-4">To'lov qilish</h2>
+        <p class="text-center text-muted">Kurs: <strong>{{ course.title }}</strong></p>
+        <p class="text-center fs-4 fw-bold text-primary">{{ course.price }} so'm</p>
+
+        <div class="bank-card">
+            <div class="small opacity-75">O'tkazma uchun karta</div>
+            <div class="card-number">{{ card_number }}</div>
+            <div class="fw-bold">AZIZBEK. A (Sizning Ismingiz)</div>
+        </div>
+
+        <div class="alert alert-info">
+            <i class="bi bi-info-circle"></i> Iltimos, to'lovni amalga oshirib, chek rasmini (skrinshot) pastga yuklang.
+        </div>
+
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            
+            {% if form.errors %}
+                <div class="alert alert-danger">
+                    {{ form.errors }}
+                </div>
+            {% endif %}
+
+            <div class="mb-3">
+                <label class="form-label fw-bold">Promokod (Agar bor bo'lsa)</label>
+                {{ form.promocode }}
+                <div class="form-text">Promokod to'g'ri bo'lsa, admin tasdiqlayotganda narxni pasaytiradi.</div>
+            </div>
+
+            <div class="mb-4">
+                <label class="form-label fw-bold">To'lov Cheki (Skrinshot)</label>
+                {{ form.payment_receipt }}
+            </div>
+
+            <div class="d-grid">
+                <button type="submit" class="btn btn-primary btn-lg">
+                    Tasdiqlash va Yuborish
+                </button>
+            </div>
+            
+            <div class="text-center mt-3">
+                <a href="{% url 'course_detail' course.slug %}" class="text-muted">Bekor qilish</a>
+            </div>
+
+        </form>
+    </div>
+
+</div>
+
+{% endblock %}

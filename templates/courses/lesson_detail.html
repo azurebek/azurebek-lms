@@ -1,0 +1,116 @@
+{% extends "base.html" %}
+{% block title %}{{ lesson.title }} - {{ course.title }}{% endblock %}
+
+{% block content %}
+
+<style>
+    .lesson-container {
+        padding-top: 100px; /* Navbar */
+        background-color: #f6f9ff;
+        min-height: 100vh;
+    }
+    .sidebar-list {
+        background: #fff;
+        border-radius: 10px;
+        padding: 20px;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+    }
+    .lesson-content {
+        background: #fff;
+        border-radius: 10px;
+        padding: 30px;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+        margin-bottom: 20px;
+    }
+    .active-lesson {
+        background-color: #e6f0ff;
+        color: #012970;
+        font-weight: bold;
+        border-left: 4px solid #4154f1;
+    }
+</style>
+
+<div class="lesson-container">
+    <div class="container py-4">
+        <div class="row">
+
+            <div class="col-lg-4 mb-4">
+                <div class="sidebar-list">
+                    <h5 class="fw-bold mb-3">Darslar Mundarijasi</h5>
+                    <div class="list-group list-group-flush">
+                        {% for item in lessons %}
+                            <a href="{% url 'lesson_detail' course.slug item.slug %}" 
+                               class="list-group-item list-group-item-action {% if item.id == lesson.id %}active-lesson{% endif %}">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <span>{{ item.order }}. {{ item.title }}</span>
+                                    {% if item.id == lesson.id %}
+                                        <i class="bi bi-play-circle-fill text-primary"></i>
+                                    {% else %}
+                                        <i class="bi bi-circle"></i>
+                                    {% endif %}
+                                </div>
+                            </a>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-8">
+                
+                <div class="lesson-content">
+                    <h2 class="fw-bold mb-3">{{ lesson.title }}</h2>
+                    
+                    {% if lesson.video_link %}
+                        <div class="alert alert-info">
+                            <i class="bi bi-camera-video-fill"></i> 
+                            Video darsni ko'rish uchun: <a href="{{ lesson.video_link }}" target="_blank" class="fw-bold">Telegram kanalga o'ting</a>
+                        </div>
+                    {% endif %}
+
+                    <div class="mt-4">
+                        {{ lesson.content|safe }}
+                    </div>
+                </div>
+
+                <div class="lesson-content border-top border-3 border-primary">
+                    <h4 class="fw-bold mb-3"><i class="bi bi-pencil-square"></i> Uyga Vazifa</h4>
+                    
+                    <div class="p-3 bg-light rounded mb-3">
+                        <strong>Shart:</strong> {{ lesson.homework_description|safe }}
+                    </div>
+
+                    {% if submission %}
+                        <div class="alert {% if submission.is_approved %}alert-success{% else %}alert-warning{% endif %}">
+                            <strong>Holati:</strong> 
+                            {% if submission.is_approved %}
+                                ✅ Qabul qilindi! Keyingi dars ochiq.
+                            {% else %}
+                                ⏳ Tekshirilmoqda...
+                            {% endif %}
+                            
+                            {% if submission.admin_comment %}
+                                <hr>
+                                <strong>O'qituvchi izohi:</strong> {{ submission.admin_comment }}
+                            {% endif %}
+                        </div>
+                    {% endif %}
+
+                    {% if not submission or not submission.is_approved %}
+                        <form method="post" enctype="multipart/form-data">
+                            {% csrf_token %}
+                            {{ form.as_p }}
+                            <button type="submit" class="btn btn-primary">
+                                <i class="bi bi-send"></i> Vazifani Yuborish
+                            </button>
+                        </form>
+                    {% endif %}
+
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+</div>
+
+{% endblock %}

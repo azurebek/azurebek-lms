@@ -1,0 +1,317 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Dashboard - User Panel{% endblock %}
+
+{% block content %}
+
+<style>
+    /* Dashboard uchun maxsus CSS */
+    .dashboard-section {
+        background-color: #f6f9ff;
+        min-height: 100vh;
+        padding-top: 120px;
+        padding-bottom: 60px;
+    }
+
+    /* Chap tomondagi menyu (Sidebar) */
+    .dashboard-sidebar {
+        background: #fff;
+        border-radius: 8px;
+        box-shadow: 0 0 20px rgba(1, 41, 112, 0.08);
+        padding: 20px;
+        position: sticky;
+        top: 100px;
+    }
+
+    .user-box {
+        text-align: center;
+        margin-bottom: 20px;
+        padding-bottom: 20px;
+        border-bottom: 1px solid #eee;
+    }
+
+    .profile-img-dashboard {
+        width: 80px;
+        height: 80px;
+        object-fit: cover;
+        border: 3px solid #f6f9ff;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+
+    .dashboard-menu a {
+        display: flex;
+        align-items: center;
+        padding: 12px 15px;
+        color: #4154f1;
+        font-weight: 600;
+        border-radius: 4px;
+        transition: 0.3s;
+        margin-bottom: 5px;
+        text-decoration: none;
+    }
+
+    .dashboard-menu a:hover, .dashboard-menu a.active {
+        background: #f0f4fc;
+        color: #012970;
+    }
+
+    .dashboard-menu i {
+        font-size: 20px;
+        margin-right: 12px;
+    }
+
+    /* Statistika Kartalari (Cards) */
+    .stat-card {
+        background: #fff;
+        border-radius: 10px;
+        padding: 25px;
+        box-shadow: 0 0 20px rgba(1, 41, 112, 0.08);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        transition: 0.3s;
+        border: none;
+        height: 100%;
+    }
+
+    .stat-card:hover {
+        transform: translateY(-5px);
+    }
+
+    .stat-content h3 {
+        font-size: 28px;
+        font-weight: 700;
+        color: #012970;
+        margin: 0;
+    }
+
+    .stat-content p {
+        font-size: 14px;
+        color: #899bbd;
+        margin: 0;
+    }
+
+    .stat-icon {
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 28px;
+    }
+
+    /* Ikonka ranglari */
+    .bg-light-blue { background: #f6f9ff; color: #4154f1; }
+    .bg-light-green { background: #e0f8e9; color: #2eca6a; }
+    .bg-light-orange { background: #ffecdf; color: #ff771d; }
+    .bg-light-red { background: #ffede9; color: #df1529; }
+
+    /* Jadval (Table) */
+    .recent-projects {
+        background: #fff;
+        border-radius: 10px;
+        padding: 25px;
+        box-shadow: 0 0 20px rgba(1, 41, 112, 0.08);
+        margin-top: 30px;
+    }
+
+    .table th {
+        font-size: 14px;
+        color: #899bbd;
+        font-weight: 600;
+        border-top: none;
+    }
+
+    .table td {
+        vertical-align: middle;
+        font-size: 15px;
+        color: #444;
+    }
+
+    .status-badge {
+        padding: 5px 12px;
+        border-radius: 50px;
+        font-size: 12px;
+        font-weight: 600;
+    }
+
+    /* Status ranglari */
+    .status-active { background: #e0f8e9; color: #2eca6a; } /* On Track o'rniga Active */
+    .status-rejected { background: #ffede9; color: #df1529; } /* Delayed o'rniga Rejected */
+    .status-pending { background: #ffecdf; color: #ff771d; }
+
+</style>
+
+<section class="dashboard-section">
+    <div class="container">
+        <div class="row">
+
+            <div class="col-lg-3 mb-4">
+                <div class="dashboard-sidebar">
+
+                    <div class="user-box">
+                        {% if user.avatar %}
+                            <img src="{{ user.avatar.url }}" class="rounded-circle mb-3 profile-img-dashboard" alt="User">
+                        {% else %}
+                            <img src="https://via.placeholder.com/80" class="rounded-circle mb-3 profile-img-dashboard" alt="User">
+                        {% endif %}
+
+                        <h5 class="fw-bold text-dark">{{ user.first_name|default:user.username }}</h5>
+                        <p class="text-muted small mb-0">{{ user.email }}</p>
+                    </div>
+
+                    <div class="dashboard-menu">
+                        <a href="{% url 'dashboard' %}" class="active">
+                            <i class="bi bi-grid-fill"></i> Dashboard
+                        </a>
+                        <a href="{% url 'my_courses' %}"> <i class="bi bi-book-half"></i> My Courses
+                        </a>
+                        <a href="#">
+                            <i class="bi bi-chat-left-text-fill"></i> Messages
+                        </a>
+                        <a href="{% url 'edit_profile' %}">
+                            <i class="bi bi-person-lines-fill"></i> Edit Profile
+                        </a>
+                        <a href="#">
+                            <i class="bi bi-gear-fill"></i> Settings
+                        </a>
+
+                        <hr>
+
+                        <form method="post" action="{% url 'logout' %}">
+                            {% csrf_token %}
+                            <button type="submit" style="background:none; border:none; width:100%; text-align:left; padding:0;">
+                                <span class="d-flex align-items-center" style="color:#dc3545; font-weight:600; padding: 12px 15px;">
+                                    <i class="bi bi-box-arrow-right" style="font-size:20px; margin-right:12px;"></i> Logout
+                                </span>
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-9">
+
+                <h3 class="fw-bold text-dark mb-4">Welcome back, {{ user.first_name }}! 👋</h3>
+
+                <div class="row gy-4">
+
+                    <div class="col-md-6 col-xl-4">
+                        <div class="stat-card">
+                            <div class="stat-content">
+                                <h3>{{ active_count }}</h3>
+                                <p>Active Courses</p>
+                            </div>
+                            <div class="stat-icon bg-light-green">
+                                <i class="bi bi-journal-check"></i>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6 col-xl-4">
+                        <div class="stat-card">
+                            <div class="stat-content">
+                                <h3>{{ assignments_count }}</h3>
+                                <p>Assignments</p>
+                            </div>
+                            <div class="stat-icon bg-light-blue">
+                                <i class="bi bi-list-task"></i>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6 col-xl-4">
+                        <div class="stat-card">
+                            <div class="stat-content">
+                                <h3>{{ certificates_count }}</h3>
+                                <p>Certificates</p>
+                            </div>
+                            <div class="stat-icon bg-light-orange"> <i class="bi bi-award"></i>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="recent-projects">
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <h5 class="fw-bold mb-0">Active Projects</h5>
+                        <a href="{% url 'my_courses' %}" class="btn btn-sm btn-primary">View All</a>
+                    </div>
+
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle">
+                            <thead>
+                                <tr>
+                                    <th>Project Name</th>
+                                    <th>Progress</th>
+                                    <th>Status</th>
+                                    <th>Members</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for item in course_data %}
+                                <tr>
+                                    <td class="fw-bold">{{ item.course.title }}</td>
+
+                                    <td style="width: 25%;">
+                                        <div class="progress" style="height: 6px; width: 100%;">
+                                            <div class="progress-bar {% if item.progress == 100 %}bg-success{% else %}bg-primary{% endif %}"
+                                                 role="progressbar"
+                                                 style="width: {{ item.progress }}%">
+                                            </div>
+                                        </div>
+                                        <small class="text-muted">{{ item.progress }}%</small>
+                                    </td>
+
+                                    <td>
+                                        {% if item.status == 'active' %}
+                                            <span class="status-badge status-active">Active</span>
+                                        {% elif item.status == 'pending' %}
+                                            <span class="status-badge status-pending">Pending</span>
+                                        {% else %}
+                                            <span class="status-badge status-rejected">Rejected</span>
+                                        {% endif %}
+                                    </td>
+
+                                    <td>
+                                        <div class="d-flex align-items-center">
+                                            {% if item.course.image %}
+                                                <img src="{{ item.course.image.url }}" width="30" height="30" class="rounded-circle border border-white" style="object-fit:cover;">
+                                            {% else %}
+                                                <div class="rounded-circle bg-light d-flex align-items-center justify-content-center border border-white" style="width:30px; height:30px;">
+                                                    <i class="bi bi-book"></i>
+                                                </div>
+                                            {% endif %}
+                                            <span class="ms-2 small text-muted">+{{ item.total_students }} students</span>
+                                        </div>
+                                    </td>
+
+                                    <td>
+                                        <a href="{% url 'course_detail' item.course.slug %}" class="btn btn-light btn-sm rounded-circle">
+                                            <i class="bi bi-arrow-right-short text-primary"></i>
+                                        </a>
+                                    </td>
+                                </tr>
+                                {% empty %}
+                                <tr>
+                                    <td colspan="5" class="text-center py-4 text-muted">
+                                        Sizda hali kurslar yo'q. <a href="{% url 'course_list' %}">Kurs tanlash</a>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</section>
+
+{% endblock %}

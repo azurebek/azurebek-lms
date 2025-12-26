@@ -1,0 +1,284 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+
+  <title>{% block title %}Azurebek - Online Platforma{% endblock %}</title>
+  <meta name="description" content="">
+  <meta name="keywords" content="">
+
+  <link href="{% static 'assets/img/favicon.png' %}" rel="icon">
+  <link href="{% static 'assets/img/apple-touch-icon.png' %}" rel="apple-touch-icon">
+
+  <link href="https://fonts.googleapis.com" rel="preconnect">
+  <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900&family=Nunito:ital,wght@0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900&display=swap" rel="stylesheet">
+
+  <link href="{% static 'assets/vendor/bootstrap/css/bootstrap.min.css' %}" rel="stylesheet">
+  <link href="{% static 'assets/vendor/bootstrap-icons/bootstrap-icons.css' %}" rel="stylesheet">
+  <link href="{% static 'assets/vendor/aos/aos.css' %}" rel="stylesheet">
+  <link href="{% static 'assets/vendor/glightbox/css/glightbox.min.css' %}" rel="stylesheet">
+  <link href="{% static 'assets/vendor/swiper/swiper-bundle.min.css' %}" rel="stylesheet">
+
+  <link href="{% static 'assets/css/main.css' %}" rel="stylesheet">
+
+  <style>
+    /* Asosiy konteynerni Header balandligiga moslab suramiz */
+    #main {
+        margin-top: 110px; /* <--- 80px EDI, 110px QILINDI */
+        min-height: 80vh;
+    }
+
+    /* Page Title (Sarlavha) qismi */
+    .page-title {
+        padding: 40px 0;
+        margin-bottom: 30px;
+    }
+
+    section {
+        padding: 40px 0;
+        overflow: hidden;
+    }
+
+    /* Navbar profil rasmi */
+    .nav-profile-img {
+        width: 35px;
+        height: 35px;
+        object-fit: cover;
+        border-radius: 50%;
+        margin-right: 8px;
+        border: 2px solid #fff;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+  </style>
+</head>
+
+<body>
+
+  <header id="header" class="header d-flex align-items-center fixed-top">
+    <div class="container-fluid container-xl position-relative d-flex align-items-center">
+
+      <a href="{% if user.is_authenticated %}{% url 'dashboard' %}{% else %}{% url 'home' %}{% endif %}" class="logo d-flex align-items-center me-auto">
+        <img src="{% static 'assets/img/logo.png' %}" alt="Logo" style="max-height: 40px; width: auto; margin-right: 10px;">
+        <h1 class="sitename">azurebek</h1>
+      </a>
+
+      <nav id="navmenu" class="navmenu">
+        <ul>
+
+          {% if user.is_authenticated %}
+            <li>
+                <a href="{% url 'dashboard' %}" class="{% if request.resolver_match.url_name == 'dashboard' %}active{% endif %}">
+                    Dashboard
+                </a>
+            </li>
+
+            <li>
+                <a href="{% url 'my_courses' %}" class="{% if request.resolver_match.url_name == 'my_courses' %}active{% endif %}">
+                    My Learnings
+                </a>
+            </li>
+
+            <li>
+                <a href="{% url 'course_list' %}" class="{% if request.resolver_match.url_name == 'course_list' %}active{% endif %}">
+                    Kurslar
+                </a>
+            </li>
+
+            <li>
+                <a href="{% url 'blog' %}" class="{% if 'blog' in request.resolver_match.url_name %}active{% endif %}">
+                    Blog
+                </a>
+            </li>
+
+            <li><a href="{% url 'contact' %}">Contact</a></li>
+
+            <li class="dropdown">
+                <a href="#" class="d-flex align-items-center">
+                    {% if user.avatar %}
+                        <img src="{{ user.avatar.url }}" alt="Profile" class="nav-profile-img">
+                    {% else %}
+                        <img src="{% static 'assets/img/default-avatar.png' %}" alt="Profile" class="nav-profile-img">
+                    {% endif %}
+                    <span>{{ user.first_name|default:user.username }}</span>
+                    <i class="bi bi-chevron-down toggle-dropdown"></i>
+                </a>
+                <ul>
+                    <li><a href="{% url 'profile' %}">Profile Overview</a></li>
+                    <li><a href="{% url 'edit_profile' %}">Edit Profile</a></li>
+                    <li><a href="#">Settings</a></li>
+                    <li>
+                        <form method="post" action="{% url 'logout' %}" style="padding: 0;">
+                            {% csrf_token %}
+                            <button type="submit" style="background:none; border:none; width:100%; text-align:left; padding: 10px 20px; font-size: 14px; color: inherit;">Logout</button>
+                        </form>
+                    </li>
+                </ul>
+            </li>
+
+          {% else %}
+            <li><a href="{% url 'home' %}#hero" class="{% if request.resolver_match.url_name == 'home' %}active{% endif %}">Home</a></li>
+            <li><a href="{% url 'about' %}" class="{% if request.resolver_match.url_name == 'about' %}active{% endif %}">About</a></li>
+
+            <li><a href="{% url 'course_list' %}" class="{% if request.resolver_match.url_name == 'course_list' %}active{% endif %}">Courses</a></li>
+
+            <li><a href="{% url 'home' %}#portfolio">Portfolio</a></li>
+
+            <li>
+                <a href="{% url 'blog' %}" class="{% if 'blog' in request.resolver_match.url_name %}active{% endif %}">
+                    Blog
+                </a>
+            </li>
+
+            <li class="dropdown"><a href="#"><span>Dropdown</span> <i class="bi bi-chevron-down toggle-dropdown"></i></a>
+                <ul>
+                  <li><a href="#">Dropdown 1</a></li>
+                  <li><a href="#">Dropdown 2</a></li>
+                </ul>
+            </li>
+
+            <li><a href="{% url 'contact' %}">Contact</a></li>
+
+          {% endif %}
+          </ul>
+        <i class="mobile-nav-toggle d-xl-none bi bi-list"></i>
+      </nav>
+
+      {% if not user.is_authenticated %}
+         <a class="btn-getstarted flex-md-shrink-0" href="{% url 'signup' %}">Get Started</a>
+      {% endif %}
+
+    </div>
+  </header>
+
+  <main id="main" class="main">
+
+    <div class="container mt-3">
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                    {% if message.tags == 'error' %}
+                        <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                    {% elif message.tags == 'success' %}
+                        <i class="bi bi-check-circle-fill me-2"></i>
+                    {% else %}
+                        <i class="bi bi-info-circle-fill me-2"></i>
+                    {% endif %}
+
+                    {{ message }}
+
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            {% endfor %}
+        {% endif %}
+    </div>
+
+    {% block content %}
+    {% endblock %}
+  </main>
+
+  <footer id="footer" class="footer">
+    <style>
+        .footer .footer-top {
+            background: #f6f9ff;
+            padding-top: 40px;
+            padding-bottom: 20px;
+            border-top: 1px solid #e1ecff;
+        }
+        .footer h4 {
+            font-size: 16px;
+            font-weight: bold;
+            color: #012970;
+            padding-bottom: 12px;
+        }
+        .footer .footer-links ul li {
+            padding-bottom: 8px;
+        }
+        .footer .social-links a {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            background: #012970;
+            color: #fff;
+            line-height: 1;
+            margin-right: 8px;
+            border-radius: 4px;
+            width: 36px;
+            height: 36px;
+            transition: 0.3s;
+        }
+        .footer .social-links a:hover {
+            background: #4154f1;
+            text-decoration: none;
+        }
+        .footer .copyright {
+            padding-top: 20px;
+            padding-bottom: 20px;
+            font-size: 14px;
+        }
+    </style>
+
+    <div class="footer-top">
+      <div class="container">
+        <div class="row gy-4">
+
+          <div class="col-lg-5 col-md-12 footer-about">
+            <a href="{% url 'home' %}" class="d-flex align-items-center mb-2">
+              <span style="font-size: 24px; font-weight: 700; color: #012970;">Azurebek</span>
+            </a>
+            <p>Zamonaviy texnologiyalar va dasturlash olamidagi eng so'nggi yangiliklar platformasi.</p>
+            <div class="social-links mt-3">
+              <a href="https://t.me/azurebek" target="_blank"><i class="bi bi-telegram"></i></a>
+              <a href="#"><i class="bi bi-instagram"></i></a>
+              <a href="#"><i class="bi bi-linkedin"></i></a>
+              <a href="#"><i class="bi bi-github"></i></a>
+            </div>
+          </div>
+
+          <div class="col-lg-3 col-6 footer-links">
+            <h4>Sahifalar</h4>
+            <ul>
+              <li><i class="bi bi-chevron-right"></i> <a href="{% url 'home' %}">Bosh sahifa</a></li>
+              <li><i class="bi bi-chevron-right"></i> <a href="{% url 'blog' %}">Blog</a></li>
+              <li><i class="bi bi-chevron-right"></i> <a href="{% url 'contact' %}">Bog'lanish</a></li>
+            </ul>
+          </div>
+
+          <div class="col-lg-4 col-6 footer-links">
+            <h4>Platforma</h4>
+            <ul>
+              <li><i class="bi bi-chevron-right"></i> <a href="{% url 'dashboard' %}">Dashboard</a></li>
+
+              <li><i class="bi bi-chevron-right"></i> <a href="{% url 'course_list' %}">Barcha Kurslar</a></li>
+
+              <li><i class="bi bi-chevron-right"></i> <a href="#">Maxfiylik siyosati</a></li>
+            </ul>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <div class="container copyright text-center">
+      <p>&copy; Copyright <strong><span>Azurebek</span></strong>. All Rights Reserved</p>
+      <div class="credits">
+        Tashkent City, Chilanzar District
+      </div>
+    </div>
+  </footer>
+  <a href="#" id="scroll-top" class="scroll-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
+
+  <script src="{% static 'assets/vendor/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+  <script src="{% static 'assets/vendor/aos/aos.js' %}"></script>
+  <script src="{% static 'assets/vendor/glightbox/js/glightbox.min.js' %}"></script>
+  <script src="{% static 'assets/vendor/purecounter/purecounter_vanilla.js' %}"></script>
+  <script src="{% static 'assets/vendor/imagesloaded/imagesloaded.pkgd.min.js' %}"></script>
+  <script src="{% static 'assets/vendor/isotope-layout/isotope.pkgd.min.js' %}"></script>
+  <script src="{% static 'assets/vendor/swiper/swiper-bundle.min.js' %}"></script>
+  <script src="{% static 'assets/js/main.js' %}"></script>
+
+</body>
+</html>

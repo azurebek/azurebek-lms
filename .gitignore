@@ -1,0 +1,19 @@
+# 1. Python keraksiz fayllari
+__pycache__/
+*.pyc
+
+# 2. Virtual muhit (Juda katta, yuklash kerak emas)
+venv/
+env/
+.venv/
+
+# 3. Maxfiy kalitlar (ENG MUHIMI)
+.env
+
+# 4. Server yig'adigan statik fayllar papkasi
+staticfiles/
+
+# 5. Operatsion tizim fayllari (Mac/Windows)
+.DS_Store
+Thumbs.db
+.idea/

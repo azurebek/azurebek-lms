@@ -1,0 +1,143 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Mening Kurslarim - Azurebek{% endblock %}
+
+{% block content %}
+
+<style>
+    /* Asosiy fon va oraliqlar */
+    .my-courses-container {
+        padding-top: 120px; /* Navbar ostidan chiqish uchun */
+        padding-bottom: 60px;
+        min-height: 80vh;
+        background-color: #f6f9ff;
+    }
+
+    /* Kurs kartochkasi */
+    .course-status-card {
+        background: #fff;
+        border-radius: 10px;
+        overflow: hidden;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+        margin-bottom: 20px;
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+        transition: 0.3s;
+    }
+
+    .course-status-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+    }
+
+    /* Status belgisi (Tepada o'ngda) */
+    .status-badge {
+        position: absolute;
+        top: 15px;
+        right: 15px;
+        padding: 5px 12px;
+        border-radius: 20px;
+        font-size: 12px;
+        font-weight: 700;
+        text-transform: uppercase;
+        color: #fff;
+        z-index: 2;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    }
+
+    .bg-pending { background-color: #ffc107; color: #000; } /* Sariq */
+    .bg-active { background-color: #198754; }  /* Yashil */
+    .bg-rejected { background-color: #dc3545; } /* Qizil */
+
+    .card-img-top {
+        height: 180px;
+        object-fit: cover;
+        position: relative;
+    }
+</style>
+
+<div class="my-courses-container">
+    <div class="container">
+
+        <div class="section-title text-center mb-5">
+            <h2>Mening Kurslarim</h2>
+            <p>Xarid qilingan va o'qilayotgan kurslar ro'yxati</p>
+        </div>
+
+        <div class="row gy-4">
+            {% for item in enrollments %}
+            <div class="col-lg-4 col-md-6">
+                <div class="course-status-card">
+
+                    <div class="card-img-top">
+                        {% if item.course.image %}
+                            <img src="{{ item.course.image.url }}" alt="{{ item.course.title }}" style="width:100%; height:100%; object-fit:cover;">
+                        {% else %}
+                            <img src="https://via.placeholder.com/400x200" alt="Default" style="width:100%; height:100%; object-fit:cover;">
+                        {% endif %}
+
+                        {% if item.status == 'active' %}
+                            <span class="status-badge bg-active">Faol</span>
+                        {% elif item.status == 'pending' %}
+                            <span class="status-badge bg-pending">Tekshirilmoqda</span>
+                        {% else %}
+                            <span class="status-badge bg-rejected">Rad etildi</span>
+                        {% endif %}
+                    </div>
+
+                    <div class="p-4 d-flex flex-column flex-grow-1">
+                        <h5 class="fw-bold mb-3">{{ item.course.title }}</h5>
+
+                        <div class="mt-auto">
+                            {% if item.status == 'active' %}
+
+                                {% if item.first_lesson_slug %}
+                                    <a href="{% url 'lesson_detail' item.course.slug item.first_lesson_slug %}" class="btn btn-primary w-100">
+                                        <i class="bi bi-play-circle me-2"></i> Darslarni Boshlash
+                                    </a>
+                                {% else %}
+                                    <button class="btn btn-secondary w-100" disabled>
+                                        <i class="bi bi-exclamation-circle me-2"></i> Darslar yuklanmagan
+                                    </button>
+                                {% endif %}
+
+                                {% if item.course.telegram_group_link %}
+                                    <a href="{{ item.course.telegram_group_link }}" target="_blank" class="btn btn-outline-primary w-100 mt-2">
+                                        <i class="bi bi-telegram me-2"></i> Yopiq Guruhga Kirish
+                                    </a>
+                                {% endif %}
+
+                            {% elif item.status == 'pending' %}
+                                <div class="alert alert-warning py-2 small">
+                                    <i class="bi bi-hourglass-split"></i> To'lov admin tomonidan tekshirilmoqda. Iltimos kuting.
+                                </div>
+                                <button class="btn btn-secondary w-100" disabled>Kutilmoqda...</button>
+
+                            {% else %}
+                                <div class="alert alert-danger py-2 small">
+                                    To'lov rad etildi. Qaytadan urinib ko'ring.
+                                </div>
+                                <a href="{% url 'course_enroll' item.course.slug %}" class="btn btn-outline-danger w-100">Qayta to'lov qilish</a>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+            {% empty %}
+            <div class="col-12 text-center py-5">
+                <div class="alert alert-info">
+                    <h4>Sizda hali kurslar yo'q 🤷‍♂️</h4>
+                    <p>Yangi bilimlarni o'rganishni hoziroq boshlang!</p>
+                    <a href="{% url 'course_list' %}" class="btn btn-primary mt-3">Kurslarni ko'rish</a>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+    </div>
+</div>
+
+{% endblock %}

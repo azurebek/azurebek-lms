@@ -1,0 +1,223 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}About Us - Turkish Course{% endblock %}
+
+{% block content %}
+
+<style>
+    /* ABOUT SAHIFASI UCHUN MAXSUS STIL */
+    
+    .about-page-section {
+        padding: 120px 0 80px 0; /* Navbar fixed bo'lgani uchun tepadon joy */
+        overflow: hidden;
+    }
+
+    /* Kichik sarlavha (ABOUT US, WHY CHOOSE US) */
+    .section-subtitle {
+        color: #ff6600; /* Apelsin rang */
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        margin-bottom: 10px;
+        display: block;
+        font-family: "Nunito", sans-serif;
+    }
+
+    /* Katta sarlavha */
+    .section-title-main {
+        font-size: 36px;
+        font-weight: 800;
+        color: #012970;
+        margin-bottom: 20px;
+        line-height: 1.2;
+    }
+
+    .section-desc {
+        color: #444;
+        font-size: 16px;
+        line-height: 1.6;
+        margin-bottom: 30px;
+    }
+
+    /* --- 1-RASMDAGI STATISTIKA BLOKLARI (Rangli kvadratlar) --- */
+    .stats-row {
+        margin-top: 30px;
+    }
+
+    .stat-box {
+        padding: 20px 10px;
+        text-align: center;
+        color: #fff;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        transition: transform 0.3s;
+    }
+
+    .stat-box:hover {
+        transform: translateY(-5px);
+    }
+
+    .stat-box h3 {
+        font-size: 32px;
+        font-weight: 700;
+        margin-bottom: 5px;
+    }
+
+    .stat-box span {
+        font-size: 13px;
+        font-weight: 600;
+        text-transform: uppercase;
+        display: block;
+        line-height: 1.2;
+    }
+
+    /* Ranglar */
+    .bg-green { background-color: #28a745; }
+    .bg-blue { background-color: #007bff; }
+    .bg-red { background-color: #dc3545; }
+    .bg-yellow { background-color: #ffc107; color: #fff !important; }
+
+    /* --- 2-RASMDAGI "WHY CHOOSE US" IKONKALARI --- */
+    .feature-item {
+        display: flex;
+        margin-top: 30px;
+    }
+
+    .feature-icon-box {
+        width: 60px;
+        height: 60px;
+        flex-shrink: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-right: 20px;
+        color: #fff;
+        font-size: 24px;
+        border-radius: 4px;
+    }
+
+    .feature-content h4 {
+        font-size: 20px;
+        font-weight: 700;
+        color: #012970;
+        margin-bottom: 5px;
+    }
+
+    .feature-content p {
+        font-size: 14px;
+        color: #666;
+        margin-bottom: 0;
+    }
+
+    /* Rasmlarni chiroyli qilish */
+    .about-img {
+        width: 100%;
+        border-radius: 5px;
+        box-shadow: 0 15px 30px rgba(0,0,0,0.1);
+        object-fit: cover;
+    }
+</style>
+
+<section class="about-page-section">
+    <div class="container" data-aos="fade-up">
+        <div class="row align-items-center">
+            
+            <div class="col-lg-5 mb-4 mb-lg-0" data-aos="fade-right">
+                <img src="{% static 'assets/img/about.jpg' %}" alt="About Us" class="about-img" style="min-height: 400px;">
+            </div>
+
+            <div class="col-lg-7 ps-lg-5" data-aos="fade-left">
+                <span class="section-subtitle">About Us</span>
+                <h2 class="section-title-main">First Choice For Online Education Anywhere</h2>
+                <p class="section-desc">
+                    Tempor erat elitr at rebum at at clita aliquyam consetetur. Diam dolor diam ipsum et, tempor voluptua sit consetetur sit. Aliquyam diam amet diam et eos sadipscing labore.
+                </p>
+
+                <div class="row g-0 stats-row">
+                    <div class="col-6 col-sm-3">
+                        <div class="stat-box bg-green">
+                            <h3 data-purecounter-start="0" data-purecounter-end="123" data-purecounter-duration="1" class="purecounter">123</h3>
+                            <span>Available Subjects</span>
+                        </div>
+                    </div>
+                    <div class="col-6 col-sm-3">
+                        <div class="stat-box bg-blue">
+                            <h3 data-purecounter-start="0" data-purecounter-end="1234" data-purecounter-duration="1" class="purecounter">1234</h3>
+                            <span>Online Courses</span>
+                        </div>
+                    </div>
+                    <div class="col-6 col-sm-3">
+                        <div class="stat-box bg-red">
+                            <h3 data-purecounter-start="0" data-purecounter-end="123" data-purecounter-duration="1" class="purecounter">123</h3>
+                            <span>Skilled Instructors</span>
+                        </div>
+                    </div>
+                    <div class="col-6 col-sm-3">
+                        <div class="stat-box bg-yellow">
+                            <h3 data-purecounter-start="0" data-purecounter-end="1234" data-purecounter-duration="1" class="purecounter">1234</h3>
+                            <span>Happy Students</span>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+</section>
+
+<section class="section pt-0">
+    <div class="container" data-aos="fade-up">
+        <div class="row align-items-center">
+            
+            <div class="col-lg-6 mb-4 mb-lg-0" data-aos="fade-right">
+                <span class="section-subtitle">Why Choose Us?</span>
+                <h2 class="section-title-main">Why You Should Start Learning with Us?</h2>
+                <p class="section-desc">
+                    Aliquyam accusam clita nonumy ipsum sit sea clita ipsum clita, ipsum dolores amet voluptua duo dolores et sit ipsum rebum, sadipscing et erat eirmod diam kasd labore clita est.
+                </p>
+
+                <div class="feature-item">
+                    <div class="feature-icon-box bg-blue">
+                        <i class="bi bi-mortarboard-fill"></i>
+                    </div>
+                    <div class="feature-content">
+                        <h4>Skilled Instructors</h4>
+                        <p>Labore rebum duo est Sit dolore eos sit tempor eos stet, vero vero clita magna kasd no nonumy et eos dolor magna ipsum.</p>
+                    </div>
+                </div>
+
+                <div class="feature-item">
+                    <div class="feature-icon-box bg-red">
+                        <i class="bi bi-patch-check-fill"></i>
+                    </div>
+                    <div class="feature-content">
+                        <h4>International Certificate</h4>
+                        <p>Labore rebum duo est Sit dolore eos sit tempor eos stet, vero vero clita magna kasd no nonumy et eos dolor magna ipsum.</p>
+                    </div>
+                </div>
+
+                <div class="feature-item">
+                    <div class="feature-icon-box bg-yellow">
+                        <i class="bi bi-person-video3"></i>
+                    </div>
+                    <div class="feature-content">
+                        <h4>Online Classes</h4>
+                        <p>Labore rebum duo est Sit dolore eos sit tempor eos stet, vero vero clita magna kasd no nonumy et eos dolor magna ipsum.</p>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="col-lg-6 ps-lg-5" data-aos="fade-left">
+                <img src="{% static 'assets/img/features.png' %}" alt="Why Choose Us" class="about-img" style="min-height: 500px;">
+            </div>
+
+        </div>
+    </div>
+</section>
+
+{% endblock %}

@@ -1,0 +1,212 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}{{ course.title }} - Azurebek{% endblock %}
+
+{% block content %}
+
+<style>
+    /* Asosiy fon */
+    .course-detail-container {
+        padding-top: 30px;
+        padding-bottom: 60px;
+        background-color: #f6f9ff;
+        min-height: 100vh;
+    }
+
+    /* O'ng tomondagi sidebar kartalari */
+    .course-sidebar {
+        background: #fff;
+        padding: 25px;
+        border-radius: 10px;
+        box-shadow: 0 0 30px rgba(0,0,0,0.05);
+    }
+
+    /* Sticky effektini faqat narx blokiga beramiz yoki sidebar-wrapper ishlatamiz */
+    .sidebar-wrapper {
+        position: sticky;
+        top: 130px;
+    }
+
+    .price-tag {
+        font-size: 32px;
+        font-weight: 700;
+        color: #012970;
+    }
+
+    .old-price {
+        font-size: 18px;
+        text-decoration: line-through;
+        color: #999;
+    }
+
+    /* Asosiy kontent (Oq quti) */
+    .course-main-content {
+        background: #fff;
+        border-radius: 10px;
+        padding: 30px;
+        box-shadow: 0 0 30px rgba(0,0,0,0.05);
+    }
+
+    /* Darslar ro'yxati elementlari */
+    .lesson-item {
+        background: #f9f9f9;
+        padding: 15px;
+        margin-bottom: 10px;
+        border-radius: 5px;
+        border-left: 4px solid #4154f1;
+        transition: 0.3s;
+    }
+    .lesson-item:hover {
+        background: #f0f4ff;
+    }
+    .lesson-icon {
+        color: #4154f1;
+        margin-right: 10px;
+    }
+
+    /* Leaderboard stili */
+    .leaderboard-item {
+        transition: 0.2s;
+        border-bottom: 1px solid #f1f1f1;
+    }
+    .leaderboard-item:last-child {
+        border-bottom: none;
+    }
+    .leaderboard-item.current-user {
+        background-color: #eef2ff;
+        border-radius: 8px;
+    }
+</style>
+
+<div class="course-detail-container">
+    <div class="container">
+
+        <div class="mb-4">
+            <h1 class="fw-bold" style="color: #012970;">{{ course.title }}</h1>
+            <div class="mt-2">
+                <span class="badge bg-primary me-2">Video Darslar</span>
+                <span class="badge bg-secondary">LMS Tizimi</span>
+            </div>
+        </div>
+
+        <div class="row gy-5">
+
+            <div class="col-lg-8">
+                <div class="course-main-content">
+                    {% if course.image %}
+                        <img src="{{ course.image.url }}" alt="{{ course.title }}" class="img-fluid rounded mb-4 w-100" style="max-height: 400px; object-fit: cover;">
+                    {% endif %}
+
+                    <h3 class="fw-bold text-dark mb-3">Kurs haqida</h3>
+                    <div class="content mb-5 text-muted">
+                        {{ course.description|safe }}
+                    </div>
+
+                    <h3 class="fw-bold text-dark mb-3">
+                        Darslar rejasi <span class="text-muted fs-6">({{ course.lessons.count }} ta dars)</span>
+                    </h3>
+
+                    <div class="curriculum">
+                        {% for lesson in lessons %}
+                        <div class="lesson-item d-flex justify-content-between align-items-center">
+                            <div>
+                                <i class="bi bi-play-circle-fill lesson-icon"></i>
+                                <strong>{{ lesson.order }}-dars:</strong> {{ lesson.title }}
+                            </div>
+
+                            {% if not lesson.is_locked %}
+                                <span class="badge bg-success"><i class="bi bi-unlock-fill"></i> Ochiq</span>
+                            {% else %}
+                                <div class="text-end">
+                                    <i class="bi bi-lock-fill text-muted"></i>
+                                    {% if is_enrolled %}
+                                        <div style="font-size: 10px;" class="text-danger fw-bold">(Vazifa topshirish kerak)</div>
+                                    {% endif %}
+                                </div>
+                            {% endif %}
+                        </div>
+                        {% empty %}
+                        <p class="text-muted">Hozircha darslar yuklanmagan.</p>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-4">
+                <div class="sidebar-wrapper">
+
+                    <div class="course-sidebar mb-4">
+                        <div class="mb-3">
+                            {% if course.old_price %}
+                                <span class="old-price">{{ course.old_price }} so'm</span>
+                            {% endif %}
+                            <div class="price-tag">{{ course.price }} so'm</div>
+                        </div>
+
+                        {% if is_enrolled %}
+                            <div class="alert alert-success">
+                                <i class="bi bi-check-circle-fill"></i> Siz bu kursga a'zosiz!
+                            </div>
+
+                            {% if lessons %}
+                                <a href="{% url 'lesson_detail' course.slug lessons.0.slug %}" class="btn btn-primary w-100 btn-lg py-3">
+                                    Darslarni Boshlash <i class="bi bi-arrow-right"></i>
+                                </a>
+                            {% else %}
+                                <button class="btn btn-secondary w-100 py-3" disabled>Darslar hali yo'q</button>
+                            {% endif %}
+
+                        {% else %}
+                            <a href="{% url 'course_enroll' course.slug %}" class="btn btn-primary w-100 btn-lg py-3 fw-bold mb-3">
+                                Hoziroq Sotib Olish
+                            </a>
+                            <ul class="list-unstyled text-muted small">
+                                <li class="mb-2"><i class="bi bi-check-lg text-primary"></i> Umrbod kirish imkoniyati</li>
+                                <li class="mb-2"><i class="bi bi-check-lg text-primary"></i> Uyga vazifalar tekshiruvi</li>
+                                <li class="mb-2"><i class="bi bi-check-lg text-primary"></i> Yopiq Telegram guruh</li>
+                            </ul>
+                        {% endif %}
+                    </div>
+
+                    <div class="course-sidebar">
+                        <h5 class="fw-bold mb-3" style="color: #012970;">
+                            <i class="bi bi-trophy text-warning me-2"></i> Kurs Reytingi
+                        </h5>
+                        <div class="leaderboard-list">
+                            {% for item in leaderboard %}
+                            <div class="leaderboard-item d-flex align-items-center justify-content-between p-2 {% if item.user == request.user %}current-user{% endif %}">
+                                <div class="d-flex align-items-center">
+                                    <span class="fw-bold me-2 text-muted" style="width: 20px;">{{ forloop.counter }}.</span>
+                                    {% if item.user.avatar %}
+                                        <img src="{{ item.user.avatar.url }}" class="rounded-circle me-2" width="30" height="30" style="object-fit: cover;">
+                                    {% else %}
+                                        <i class="bi bi-person-circle fs-5 me-2 text-secondary"></i>
+                                    {% endif %}
+                                    <div style="line-height: 1.2;">
+                                        <div class="small fw-bold">{{ item.user.first_name|default:item.user.username }}</div>
+                                        <small class="text-muted" style="font-size: 10px;">{{ item.approved_count }} ta vazifa</small>
+                                    </div>
+                                </div>
+                                <div class="text-end">
+                                    <span class="badge bg-primary rounded-pill" style="font-size: 11px;">{{ item.progress }}%</span>
+                                </div>
+                            </div>
+                            {% empty %}
+                            <p class="text-muted small text-center p-3">Hozircha reyting ma'lumotlari yo'q.</p>
+                            {% endfor %}
+                        </div>
+                        {% if leaderboard %}
+                        <div class="text-center mt-3">
+                            <small class="text-muted" style="font-size: 11px;">Faqat tasdiqlangan vazifalar hisobga olinadi.</small>
+                        </div>
+                        {% endif %}
+                    </div>
+
+                </div> </div>
+
+        </div>
+    </div>
+</div>
+
+{% endblock %}

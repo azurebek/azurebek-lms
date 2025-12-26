@@ -1,0 +1,192 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Contact Us - Azurebek{% endblock %}
+
+{% block content %}
+
+<style>
+    /* HEADER SECTION */
+    .contact-header {
+        background-color: #e6f9ff;
+        padding: 80px 0;
+        text-align: center;
+        margin-top: 60px;
+    }
+
+    .contact-header h1 {
+        font-weight: 700;
+        color: #012970;
+        margin-bottom: 10px;
+    }
+
+    /* INFO CARDS */
+    .info-box {
+        display: flex;
+        align-items: center;
+        background: #fff;
+        padding: 30px;
+        border-radius: 8px;
+        box-shadow: 0 0 20px rgba(0, 0, 0, 0.05);
+        margin-bottom: 30px;
+    }
+
+    .info-icon {
+        width: 60px;
+        height: 60px;
+        background: #e6f7ff;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 24px;
+        color: #007bff;
+        margin-right: 20px;
+        flex-shrink: 0;
+    }
+
+    /* FORM SECTION */
+    .consultation-section {
+        padding: 60px 0;
+    }
+
+    .form-control, .form-select {
+        padding: 12px 15px;
+        border-radius: 8px;
+        border: 1px solid #dee2e6;
+        margin-bottom: 20px;
+        font-size: 14px;
+    }
+
+    .btn-submit {
+        background: #4154f1;
+        border: 0;
+        padding: 12px 30px;
+        color: #fff;
+        transition: 0.4s;
+        border-radius: 8px;
+        width: 100%;
+        font-weight: 600;
+    }
+
+    .btn-submit:hover {
+        background: #5969f3;
+    }
+
+    .contact-image {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        border-radius: 15px;
+        min-height: 400px;
+    }
+</style>
+
+<section class="contact-header">
+    <div class="container">
+        <h1>Contact Us</h1>
+        <p>Savollaringiz bormi? Biz bilan bog'laning va biz sizga yordam berishdan mamnun bo'lamiz.</p>
+
+        <nav aria-label="breadcrumb" class="d-flex justify-content-center mt-3">
+            <ol class="breadcrumb">
+              <li class="breadcrumb-item"><a href="/">Home</a></li>
+              <li class="breadcrumb-item active" aria-current="page">Contact</li>
+            </ol>
+        </nav>
+    </div>
+</section>
+
+<section class="consultation-section">
+    <div class="container">
+
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            {% endfor %}
+        {% endif %}
+
+        <div class="row mb-5">
+            <div class="col-md-6">
+                <div class="info-box">
+                    <div class="info-icon"><i class="bi bi-envelope"></i></div>
+                    <div class="info-content">
+                        <h4>Email Us</h4>
+                        <p class="fw-bold text-primary">azurebekdev@gmail.com</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="info-box">
+                    <div class="info-icon"><i class="bi bi-geo-alt"></i></div>
+                    <div class="info-content">
+                        <h4>Address</h4>
+                        <p>Tashkent City, Uzbekistan</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row align-items-stretch gy-4">
+            <div class="col-lg-7">
+                <div class="consultation-form">
+                    <h2>Get Online Consultation</h2>
+
+                    <form action="{% url 'contact_page' %}" method="post">
+                        {% csrf_token %}
+                        <div class="row">
+                            <div class="col-md-6">
+                                <label class="form-label">First Name*</label>
+                                <input type="text" name="first_name" class="form-control" placeholder="Azizbek" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">Last Name*</label>
+                                <input type="text" name="last_name" class="form-control" placeholder="Sirojiddinov" required>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <label class="form-label">Email address*</label>
+                                <input type="email" name="email" class="form-control" placeholder="example@gmail.com" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">Specialist*</label>
+                                <select class="form-select" name="specialist">
+                                    <option value="General" selected>Choose a specialist</option>
+                                    <option value="python">Python Developer</option>
+                                    <option value="design">Web Designer</option>
+                                    <option value="manager">Project Manager</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <label class="form-label">Date*</label>
+                                <input type="date" name="date" class="form-control" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">Time*</label>
+                                <input type="time" name="time" class="form-control" required>
+                            </div>
+                        </div>
+
+                        <div class="row mt-3">
+                            <div class="col-12">
+                                <button type="submit" class="btn-submit">Make an appointment</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <div class="col-lg-5">
+                <img src="{% static 'assets/img/features-3.png' %}" alt="Office" class="contact-image">
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
